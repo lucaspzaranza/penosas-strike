@@ -7,9 +7,9 @@ public class BezierSplineInspector : Editor
  	private BezierSpline spline;
     private Transform handleTransform;
     private Quaternion handleRotation;
-    private const int lineSteps = 10;
+    private const int lineSteps = 20;
 	private const int stepsPerCurve = 10;
-	private const float directionScale = 2f;
+	private const float directionScale = 0.5f;
 	private const float handleSize = 0.04f;
 	private const float pickSize = 0.06f;
 	private int selectedIndex = -1;
@@ -47,8 +47,8 @@ public class BezierSplineInspector : Editor
     }
 	
     private void OnSceneGUI()
-	{
-        spline = target as BezierSpline; 
+	{		
+        spline = target as BezierSpline;
         handleTransform = spline.transform;
         handleRotation = Tools.pivotRotation == PivotRotation.Local ?
                          handleTransform.rotation : Quaternion.identity;
@@ -111,7 +111,6 @@ public class BezierSplineInspector : Editor
 
 	private Vector3 ShowPoint(int index)
 	{
-
         Vector3 point = handleTransform.TransformPoint(spline.GetControlPoint(index));
 		float size = HandleUtility.GetHandleSize(point);
 		if (index == 0)
