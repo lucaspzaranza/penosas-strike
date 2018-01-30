@@ -5,6 +5,8 @@ using System;
 
 public class BezierSpline : MonoBehaviour 
 {
+	#region Vars and Props
+
 	[SerializeField]
 	private Vector3[] points;
 	[SerializeField]
@@ -27,21 +29,29 @@ public class BezierSpline : MonoBehaviour
 	[SerializeField]
 	private bool loop;
 
-	public bool Loop {
-		get {
+	public bool Loop 
+	{
+		get 
+		{
 			return loop;
 		}
-		set {
+		set 
+		{
 			loop = value;
-			if (value == true) {
+			if (value == true) 
+			{
 				modes[modes.Length - 1] = modes[0];
 				SetControlPoint(0, points[0]);
 			}
 		}
 	}
 
-	public Vector3 GetControlPoint (int index) => 
-		points[index];	
+	#endregion
+
+	public Vector3 GetControlPoint (int index)
+	{
+		return points[index];	
+	}
 
 	public void SetControlPoint (int index, Vector3 point) 
 	{
@@ -160,7 +170,8 @@ public class BezierSpline : MonoBehaviour
 		}
     }
 
-	private void EnforceMode (int index) {
+	private void EnforceMode (int index) 
+	{
 		int modeIndex = (index + 1) / 3;
 		BezierControlPointMode mode = modes[modeIndex];
 		if (mode == BezierControlPointMode.Free || !loop && (modeIndex == 0 || modeIndex == modes.Length - 1)) {
@@ -214,4 +225,22 @@ public class BezierSpline : MonoBehaviour
 			BezierControlPointMode.Free
 		};
 	}
+
+	public void SetSplineExtension(Vector2 initial, Vector2 final)
+	{
+		if(ControlPointCount > 0)
+		{
+            points[0].x = initial.x;
+            points[0].y = initial.y;
+
+            points[ControlPointCount - 1].x = final.x;
+            points[ControlPointCount - 1].y = final.y;
+        }        
+    }
+
+	public void SetSplineNewPoint(int index, ref Vector2 newPoint)
+	{
+		points[index] = newPoint;
+        SetControlPointMode(index, BezierControlPointMode.Aligned);        
+    }
 }

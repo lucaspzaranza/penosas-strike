@@ -17,6 +17,7 @@ public class SplineWalker : MonoBehaviour
 	void Start()
 	{
         sprite = GetComponent<SpriteRenderer>();
+        spline = FindObjectOfType(typeof(BezierSpline)) as BezierSpline;
     }
 
     void FixedUpdate () 
