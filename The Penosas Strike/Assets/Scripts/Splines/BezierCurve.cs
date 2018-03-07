@@ -32,5 +32,9 @@ public class BezierCurve : MonoBehaviour
 	{
         return GetVelocity(t).normalized;
     }
-	
+
+	public void UpdateCurvePoint(int index, ref Vector2 newPoint)
+	{
+		points[index] = newPoint;
+	}	
 }

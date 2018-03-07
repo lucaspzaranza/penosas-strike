@@ -29,8 +29,7 @@ public class BezierCurveInspector : Editor
         ShowDirections();
         Handles.DrawBezier(p0, p3, p1, p2, Color.white, null, 2f);
 
-        Handles.color = Color.white;
-        
+        Handles.color = Color.white;        
     }
 
 	private void ShowDirections()

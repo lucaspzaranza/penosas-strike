@@ -238,9 +238,9 @@ public class BezierSpline : MonoBehaviour
         }        
     }
 
-	public void SetSplineNewPoint(int index, ref Vector2 newPoint)
+	public void SetSplineNewPoint(int index, ref Vector2 newPoint, BezierControlPointMode mode)
 	{
 		points[index] = newPoint;
-        SetControlPointMode(index, BezierControlPointMode.Aligned);        
+        SetControlPointMode(index, mode);        
     }
 }

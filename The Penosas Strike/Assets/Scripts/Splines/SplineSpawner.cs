@@ -14,7 +14,7 @@ public class SplineSpawner : MonoBehaviour
 	[SerializeField] private bool isLoop;	    
     private BezierControlPointMode controlPointMode;
     private GameObject newSpline;
-    
+    public SpawnLimits spawnLimits;
 
     #endregion
 
@@ -44,46 +44,58 @@ public class SplineSpawner : MonoBehaviour
     		        
 		for (int i = 0; i < numOfCurves; i++)		
             splineComp.AddCurve();        
-
-		SetRandomPositionInSpawnZone(out initialPosition);
-        SetRandomPositionInSpawnZone(out finalPosition);
+        
+		SetRandomPositionInSpawnZone(out initialPosition, false);
+        SetRandomPositionInSpawnZone(out finalPosition, true);
 		splineComp.SetSplineExtension(initialPosition, finalPosition);
         
-		Vector2 newPoint;
+		Vector2[] newPoints = new Vector2[splineComp.ControlPointCount];
+        int middlePoint = splineComp.ControlPointCount / 2;
         for (int i = 1; i < splineComp.ControlPointCount - 1; i++)
 		{
-            SetRandomPositionInGameZone(out newPoint);
-            splineComp.SetSplineNewPoint(i, ref newPoint);
-        }
+            bool pointIsNotTheMiddlePoint = i < middlePoint - 1;
+            pointIsNotTheMiddlePoint |= i > middlePoint + 1;
+            if(pointIsNotTheMiddlePoint)
+            {               
+                SetRandomPositionInGameZone(out newPoints[i]);    
+                splineComp.SetSplineNewPoint(i, ref newPoints[i], BezierControlPointMode.Aligned);            
+            }    
+            else //if (i == middlePoint)
+            {
+                newPoints[i].x = Random.Range(spawnLimits.lowerLeftMin.position.x, 
+                spawnLimits.lowerRightMin.position.x);
+       
+                newPoints[i].y = Random.Range(spawnLimits.lowerLeftMin.position.y, 
+                spawnLimits.upperLeftMin.position.y); 
+                splineComp.SetSplineNewPoint(i, ref newPoints[i], BezierControlPointMode.Mirrored);       
+            }            
+        }           
 
         splineComp.Loop = isLoop;
         SplineCount++;
     }
 
-	private void SetRandomPositionInSpawnZone(out Vector2 point)
-	{		
-		float xCoord = spawnZone.bounds.extents.x;
-        float yCoord;
-		point.x = Random.Range(-xCoord, xCoord);		
-		if(Mathf.Abs(initialPosition.x) < Mathf.Abs(spawnZone.points[7].x))
-		{
-			// If the value is less than the x collider limit, set it to the 
-			// upper rectangle area.
-            yCoord = Random.Range(spawnZone.points[7].y, spawnZone.points[1].y);
-        }
-		else
-		{
-			// Otherwise, set it to the side rectangle areas.
-            yCoord = Random.Range(spawnZone.points[0].y, spawnZone.points[1].y);
-        }
-        point.y = yCoord;    
+	private void SetRandomPositionInSpawnZone(out Vector2 point, bool isFinal)
+	{				                       
+        point.x = isFinal ? spawnLimits.lowerRightMax.position.x : 
+            spawnLimits.lowerLeftMax.position.x;                   
+
+        point.y = Random.Range(spawnLimits.lowerLeftMin.position.y, 
+            spawnLimits.upperLeftMin.position.y);         
     }
 
 	private void SetRandomPositionInGameZone(out Vector2 point)
 	{
-        float xCoord = Random.Range(-spawnZone.points[7].x, spawnZone.points[7].x);
-        float yCoord = Random.Range(spawnZone.points[0].y, spawnZone.points[7].y);
+        float xCoord;
+        float yCoord;
+
+        xCoord = Random.Range(spawnLimits.lowerLeftMin.position.x, 
+            spawnLimits.lowerRightMin.position.x);
+       
+        yCoord = Random.Range(spawnLimits.lowerLeftMin.position.y, 
+                spawnLimits.upperLeftMin.position.y);        
+        
         point.x = xCoord;
         point.y = yCoord;
-    }
+    }    
 }

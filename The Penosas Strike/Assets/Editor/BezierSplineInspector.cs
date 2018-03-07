@@ -7,7 +7,7 @@ public class BezierSplineInspector : Editor
  	private BezierSpline spline;
     private Transform handleTransform;
     private Quaternion handleRotation;
-    private const int lineSteps = 20;
+    private const int lineSteps = 10;
 	private const int stepsPerCurve = 10;
 	private const float directionScale = 0.5f;
 	private const float handleSize = 0.04f;

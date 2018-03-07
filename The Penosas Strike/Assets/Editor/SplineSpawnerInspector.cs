@@ -12,6 +12,6 @@ public class SplineSpawnerInspector : Editor
         if(GUILayout.Button("Generate Spline")) 
 		{
             spawner.GenerateSpline();           
-        }
+        }        
     }
 }
