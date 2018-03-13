@@ -63,7 +63,7 @@ public class SplineSpawner : MonoBehaviour
             else //if (i == middlePoint)
             {
                 newPoints[i].x = Random.Range(spawnLimits.lowerLeftMin.position.x, 
-                spawnLimits.lowerRightMin.position.x);
+                -spawnLimits.lowerLeftMin.position.x);
        
                 newPoints[i].y = Random.Range(spawnLimits.lowerLeftMin.position.y, 
                 spawnLimits.upperLeftMin.position.y); 
@@ -77,7 +77,7 @@ public class SplineSpawner : MonoBehaviour
 
 	private void SetRandomPositionInSpawnZone(out Vector2 point, bool isFinal)
 	{				                       
-        point.x = isFinal ? spawnLimits.lowerRightMax.position.x : 
+        point.x = isFinal ? -spawnLimits.lowerLeftMax.position.x : 
             spawnLimits.lowerLeftMax.position.x;                   
 
         point.y = Random.Range(spawnLimits.lowerLeftMin.position.y, 
@@ -90,7 +90,7 @@ public class SplineSpawner : MonoBehaviour
         float yCoord;
 
         xCoord = Random.Range(spawnLimits.lowerLeftMin.position.x, 
-            spawnLimits.lowerRightMin.position.x);
+            -spawnLimits.lowerLeftMin.position.x);
        
         yCoord = Random.Range(spawnLimits.lowerLeftMin.position.y, 
                 spawnLimits.upperLeftMin.position.y);        

@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(CurveSpawner))]
+[CustomEditor(typeof(EnemySpawner))]
 public class CurveSpawnerInspector : Editor {
-private CurveSpawner spawner;
+private EnemySpawner spawner;
     public override void OnInspectorGUI()
 	{           
-        spawner = target as CurveSpawner;           
+        spawner = target as EnemySpawner;           
 		base.OnInspectorGUI();
         if(GUILayout.Button("Generate Curve")) 
 		{

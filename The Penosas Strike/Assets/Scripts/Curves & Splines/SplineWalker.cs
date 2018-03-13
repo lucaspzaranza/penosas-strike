@@ -8,49 +8,52 @@ public class SplineWalker : MonoBehaviour
     public SplineWalkerMode mode;
     public BezierSpline spline;
     public BezierCurve curve;
+    public float speed;
     public float duration;
     private float progress;
-    private float initRotation, finalRotation;
-    public bool lookForward;
+    public bool useSplines;
     private bool goingForward = true;
     private SpriteRenderer sprite;
+    private Vector3 position;
+    private Vector3 derivative;
     #endregion
 
     private void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
         spline = FindObjectOfType(typeof(BezierSpline)) as BezierSpline;
-        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;
+        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;            
     }
 
     private void FixedUpdate()
-    {
-        Move();
+    {   
+        CalculateProgress();             
+        if(useSplines)     
+        {
+            position = spline.GetPoint(progress);        
+            derivative = spline.GetDirection(progress);
+        }
+        else
+        {
+            position = curve.GetPoint(progress);        
+            derivative = curve.GetDirection(progress);    
+        }
 
-        // Spline
-        // Vector3 position = spline.GetPoint(progress);        
-        // Vector3 derivative = spline.GetDirection(progress);    
-
-        // Curve
-        Vector3 position = curve.GetPoint(progress);        
-        Vector3 derivative = curve.GetDirection(progress);    
-
-        transform.localPosition = position;
-
-        // 3D
-        if (lookForward)		
-            transform.LookAt(position + derivative);
+        transform.localPosition = position;       
 
         // 2D		 
         float newZ = Mathf.Atan2(derivative.y, derivative.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, newZ);		    
+        transform.rotation = Quaternion.Euler(0f, 0f, newZ);        
     }
 
-    private void Move()
+    private void CalculateProgress()
     {
+        //float newProgress = Time.fixedDeltaTime / duration;                
+        float newProgress = Time.fixedDeltaTime * speed / curve.Length;
+        print(newProgress);
         if (goingForward)
         {
-            progress += Time.fixedDeltaTime / duration;
+            progress += newProgress;           
             if (progress > 1f)
             {
                 if (mode == SplineWalkerMode.Once)
@@ -67,7 +70,7 @@ public class SplineWalker : MonoBehaviour
         }
         else
         {
-            progress -= Time.fixedDeltaTime / duration;
+            progress -= newProgress;
             if (progress < 0f)
             {
                 progress = -progress;
@@ -75,5 +78,10 @@ public class SplineWalker : MonoBehaviour
                 sprite.flipX = false;
             }
         }
+    }
+
+    void OnMouseDown()
+    {
+        print("Aloha!");
     }
 }

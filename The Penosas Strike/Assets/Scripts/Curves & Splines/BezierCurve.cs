@@ -3,6 +3,16 @@
 public class BezierCurve : MonoBehaviour 
 {
     public Vector3[] points;
+    [SerializeField] private float _length;
+    public float Length { get { return _length; } }
+    public GameObject curvePointPrefab;
+    private int curveSteps = 50;
+    private Vector2[] curvePoints;   
+
+    void Start()
+	{
+        _length = CurveLength();
+    }
 
     public void Reset () 
 	{
@@ -37,4 +47,20 @@ public class BezierCurve : MonoBehaviour
 	{
 		points[index] = newPoint;
 	}	
+
+	private float CurveLength()
+	{
+        float deltaDistance = 0f;
+        curvePoints = new Vector2[curveSteps];
+		for (int i = 0; i < curveSteps; i++)
+		{			
+            curvePoints[i] = GetPoint(i / (float)curveSteps);
+            Instantiate(curvePointPrefab, curvePoints[i], Quaternion.identity);
+
+			if(i > 0)
+                deltaDistance += Vector2.Distance(curvePoints[i], curvePoints[i - 1]);               
+        }
+
+        return deltaDistance;
+    }
 }
