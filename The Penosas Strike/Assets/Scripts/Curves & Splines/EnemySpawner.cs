@@ -7,6 +7,7 @@ public class EnemySpawner : MonoBehaviour
 	#region Variables
     public static EnemySpawner instance;
     public GameObject pigeon;
+    public GameObject pointPrefab;
     public float timeToSpawnEnemy;
     public SpawnLimits spawnLimits;    
     private GameObject newCurve;

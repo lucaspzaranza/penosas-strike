@@ -141,6 +141,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pigeon: {fileID: 1042253918445680, guid: 4d94c4feafc5a244fb0dc920eb3b79e0, type: 2}
+  pointPrefab: {fileID: 1419288913354230, guid: 6206769f65cfd1f4f99a02cfd6f02ed4,
+    type: 2}
   timeToSpawnEnemy: 2
   spawnLimits:
     lowerLeftMin: {fileID: 222684785}
@@ -246,47 +248,46 @@ Transform:
   m_Father: {fileID: 452846212}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1503657673
+--- !u!1 &1807518045
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 1503657675}
-  - component: {fileID: 1503657674}
+  - component: {fileID: 1807518047}
+  - component: {fileID: 1807518046}
   m_Layer: 0
-  m_Name: New Curve 13
+  m_Name: New Curve 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1503657674
+--- !u!114 &1807518046
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1503657673}
+  m_GameObject: {fileID: 1807518045}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6cb75f1a96f73e54d8ecf407d44089a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   points:
-  - {x: -6, y: 2.4011524, z: 0}
-  - {x: 2.6427214, y: 3.7700777, z: 0}
-  - {x: -2.3381822, y: -0.70752907, z: 0}
-  - {x: -1.1284356, y: 0.036846876, z: 0}
-  _length: 0
-  curvePointPrefab: {fileID: 1419288913354230, guid: 6206769f65cfd1f4f99a02cfd6f02ed4,
-    type: 2}
---- !u!4 &1503657675
+  - {x: -6, y: 0.60263664, z: 0}
+  - {x: -2.729756, y: 1.3083851, z: 0}
+  - {x: -1.4373993, y: 3.3817868, z: 0}
+  - {x: 6, y: 2.0714095, z: 0}
+  deltaPosRate: 1
+  curvePoints: []
+--- !u!4 &1807518047
 Transform:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1503657673}
+  m_GameObject: {fileID: 1807518045}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -456,11 +457,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4257305721832814, guid: 4d94c4feafc5a244fb0dc920eb3b79e0, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -0.019173563
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257305721832814, guid: 4d94c4feafc5a244fb0dc920eb3b79e0, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 2.1505187
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257305721832814, guid: 4d94c4feafc5a244fb0dc920eb3b79e0, type: 2}
       propertyPath: m_LocalPosition.z
@@ -484,6 +485,11 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4257305721832814, guid: 4d94c4feafc5a244fb0dc920eb3b79e0, type: 2}
       propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114668719337080434, guid: 4d94c4feafc5a244fb0dc920eb3b79e0,
+        type: 2}
+      propertyPath: mode
       value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []

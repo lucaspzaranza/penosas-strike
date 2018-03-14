@@ -8,8 +8,8 @@ public class BezierCurveInspector : Editor
     private Transform handleTransform;
     private Quaternion handleRotation;
     private const int lineSteps = 50;
-	private const float directionScale = 0.1f;
-	
+	private const float directionScale = 0.5f;
+
     private void OnSceneGUI()
 	{
         curve = target as BezierCurve;
@@ -27,9 +27,19 @@ public class BezierCurveInspector : Editor
         Handles.DrawLine(p2, p3);
 
         ShowDirections();
-        //Handles.DrawBezier(p0, p3, p1, p2, Color.white, null, 2f);
+        Handles.DrawBezier(p0, p3, p1, p2, Color.white, null, 2f);
 
         Handles.color = Color.white;        
+    }
+
+    public override void OnInspectorGUI()
+    {
+        base.DrawDefaultInspector();
+
+        GUILayout.BeginHorizontal();
+        GUILayout.Label("Length");
+        EditorGUILayout.FloatField(curve.Length, GUILayout.ExpandWidth(true));
+        GUILayout.EndHorizontal();
     }
 
 	private void ShowDirections()
