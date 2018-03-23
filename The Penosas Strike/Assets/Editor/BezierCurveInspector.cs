@@ -7,8 +7,11 @@ public class BezierCurveInspector : Editor
     private BezierCurve curve;
     private Transform handleTransform;
     private Quaternion handleRotation;
-    private const int lineSteps = 50;
-	private const float directionScale = 0.5f;
+    private const float handleSize = 0.04f;
+    private const float pickSize = 0.06f;
+    private const int lineSteps = 20;
+    private int selectedIndex = -1;
+	private const float directionScale = 2f;
 
     private void OnSceneGUI()
 	{
@@ -34,11 +37,14 @@ public class BezierCurveInspector : Editor
 
     public override void OnInspectorGUI()
     {
+        if(curve == null)
+            curve = target as BezierCurve;
+            
         base.DrawDefaultInspector();
 
         GUILayout.BeginHorizontal();
         GUILayout.Label("Length");
-        EditorGUILayout.FloatField(curve.Length, GUILayout.ExpandWidth(true));
+        EditorGUILayout.LabelField(curve.Length.ToString(), GUILayout.ExpandWidth(true));
         GUILayout.EndHorizontal();
     }
 
@@ -58,14 +64,26 @@ public class BezierCurveInspector : Editor
 	private Vector3 ShowPoint(int index)
 	{
         Vector3 point = handleTransform.TransformPoint(curve.points[index]);
+        float size = HandleUtility.GetHandleSize(point);
+        if (index == 0)
+			size *= 2f;
 
-        EditorGUI.BeginChangeCheck();
-        point = Handles.DoPositionHandle(point, handleRotation);
-		if(EditorGUI.EndChangeCheck())
+        if (Handles.Button(point, handleRotation, size * handleSize, size * pickSize, Handles.DotHandleCap)) 
 		{
-            Undo.RecordObject(curve, "Move Object");
-            EditorUtility.SetDirty(curve);
-            curve.points[index] = handleTransform.InverseTransformPoint(point);
+			selectedIndex = index;
+            Repaint();
+        }
+
+        if(selectedIndex == index)
+        {
+            EditorGUI.BeginChangeCheck();
+            point = Handles.DoPositionHandle(point, handleRotation);
+		    if(EditorGUI.EndChangeCheck())
+		    {
+                Undo.RecordObject(curve, "Move Object");
+                EditorUtility.SetDirty(curve);
+                curve.points[index] = handleTransform.InverseTransformPoint(point);
+            }
         }
         return point;
     }

@@ -6,4 +6,5 @@ public class SpawnLimits
     public Transform lowerLeftMin;
     public Transform lowerLeftMax;
 	public Transform upperLeftMin;	
+    public Transform upperLeftMax;
 }

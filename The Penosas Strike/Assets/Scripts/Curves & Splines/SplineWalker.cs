@@ -19,20 +19,19 @@ public class SplineWalker : MonoBehaviour
     private void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
-        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;            
+        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;
     }
 
     private void FixedUpdate()
     {   
-        CalculateProgress();             
-        
+        CalculateProgress();
+
         position = curve.GetPoint(progress);        
         derivative = curve.GetDirection(progress);   
         transform.localPosition = position;       
-            
-        // 2D		 
+            		 
         float newZ = Mathf.Atan2(derivative.y, derivative.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, newZ);        
+        transform.rotation = Quaternion.Euler(0f, 0f, newZ);
     }
 
     private void CalculateProgress()
@@ -46,9 +45,12 @@ public class SplineWalker : MonoBehaviour
         if (goingForward)
         {                       
             if (progress > 1f)
-            {
+            {                
                 if (mode == SplineWalkerMode.Once)
+                {
                     progress = 1f;
+                    LosePoint();
+                }
                 else if (mode == SplineWalkerMode.Loop)
                 {
                     deltaPos = 0f;
@@ -59,21 +61,27 @@ public class SplineWalker : MonoBehaviour
                     progress = 2f - progress;
                     goingForward = false;
                     sprite.flipX = true;
-                }
+                }                
             }
         }
         else
         {           
             if (progress < 0f)
-            {                
+            {
+                LosePoint();
                 goingForward = true;
                 sprite.flipX = false;
             }
         }        
     }
 
+    private void LosePoint()
+    {
+        print("Perde ponto");
+    }
+
     void OnMouseDown()
     {
-        print("Aloha!");
+        print("Ganha ponto");
     }
 }

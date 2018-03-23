@@ -3,16 +3,21 @@
 public class BezierCurve : MonoBehaviour 
 {
     public Vector3[] points;
-    public float deltaPosRate;
-	private float _length;
+    private const float deltaPosRate = 1.0f;
     private int curveSteps = 50;
     [HideInInspector] public Vector2[] curvePoints;   
 
-	public float Length { get { return _length; } }
-
-    void Start()
+	public float Length 
 	{
-        _length = CurveLength();
+		get 
+		{ 
+            return CurveLength();
+        } 
+	}
+
+	public BezierCurve()
+	{
+        Reset();
     }
 
     public void Reset () 
