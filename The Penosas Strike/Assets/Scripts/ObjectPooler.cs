@@ -16,7 +16,6 @@ public class ObjectPooler : MonoBehaviour
     public Dictionary<string, Queue<GameObject>> poolDictionary;
     public static ObjectPooler Instance;
 
-
     #region Singleton
     void Awake()
     {
@@ -33,12 +32,11 @@ public class ObjectPooler : MonoBehaviour
 
         foreach (Pool pool in pools)
         {
-            var poolParent = new GameObject(pool.tag + " Pool");
             Queue<GameObject> objectPool = new Queue<GameObject>();
 
             for (int i = 0; i < pool.size; i++)
             {
-                GameObject obj = Instantiate(pool.prefab, poolParent.transform);               
+                GameObject obj = Instantiate(pool.prefab);               
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }
@@ -49,17 +47,29 @@ public class ObjectPooler : MonoBehaviour
 
     public GameObject SpawnFromPool(string tag)
     {
+        GameObject objectToSpawn = null;
         if(!poolDictionary.ContainsKey(tag))
         {
             Debug.LogWarning("Pool with tag: " + tag + " doesn't exist!");
             return null;
-        }    
-
-        var objectToSpawn = poolDictionary[tag].Dequeue();
+        }
+        
+        objectToSpawn = poolDictionary[tag].Dequeue();
         objectToSpawn.SetActive(true);
-        objectToSpawn.transform.SetParent(null);
-        poolDictionary[tag].Enqueue(objectToSpawn);
-
+        poolDictionary[tag].Enqueue(objectToSpawn);        
+              
         return objectToSpawn;
+    }
+
+    public void ReturnToPool(GameObject obj)
+    {
+        if(!poolDictionary.ContainsKey(obj.tag))
+        {
+            Debug.LogWarning("Pool with tag: " + obj.tag + " doesn't exist!");
+            return;
+        }
+
+        poolDictionary[obj.tag].Enqueue(obj);
+        obj.SetActive(false);
     }
 }

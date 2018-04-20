@@ -14,10 +14,11 @@ public class EnemySpawner : MonoBehaviour
 	#region Variables
     public static EnemySpawner instance;
     public GameObject pigeon;
+    public GameObject curvePrefab;
     public GameObject pointPrefab;
     public float timeToSpawnEnemy;
     public float minCurveLength;
-    private const float offset = 1.5f;
+    private const float offset = 1f;
     private const float minDeltaPoints = 3f;
     public SpawnLimits spawnLimits;    
     private GameObject newCurve;
@@ -25,17 +26,10 @@ public class EnemySpawner : MonoBehaviour
     private PointArea initPointArea;
     private PointArea finalPointArea;
     private float timer;
+    public int enemyCount;
+    public int maxEnemies;
+
     #endregion
-
-    #region Properties
-    private static int _curveCount; 
-    public int CurveCount
-	{
-        get { return EnemySpawner._curveCount; }
-        private set { EnemySpawner._curveCount = value; }
-    }
-
-	#endregion
 
     private void Awake()
 	{
@@ -49,29 +43,33 @@ public class EnemySpawner : MonoBehaviour
     {
         timer += Time.fixedDeltaTime;
 
-        if(timer > timeToSpawnEnemy)
-        {
+        if(timer > timeToSpawnEnemy)        
+        {            
             timer = 0f;
-            GenerateCurve();
-            var newPigeon = ObjectPooler.Instance.SpawnFromPool("Pigeon");
-            newPigeon.name = "Pigeon " + CurveCount;
+           
+            if(enemyCount < maxEnemies)            
+            {                                                                                        
+                GenerateCurve();
+                enemyCount++;
+            }            
         }
     }
 
     public void GenerateCurve()
-	{
-        if(Application.isPlaying)
-        {
-            newCurve = ObjectPooler.Instance.SpawnFromPool("Curve");
-            newCurve.name = "Curve " + CurveCount;
-        }
+	{        
+        if(Application.isPlaying)                               
+            newCurve = Instantiate(curvePrefab) as GameObject;
         else if(Application.isEditor)
-            newCurve = new GameObject("Curve " + CurveCount, typeof(BezierCurve));
+            newCurve = new GameObject("Curve " + enemyCount, typeof(BezierCurve));
 
-        GetCurveAndSetPointAreas();
-        SetCurveRandomPoints(ref newCurve);
-
-        CurveCount++;
+        if(newCurve != null)        
+        {                        
+            GetCurveAndSetPointAreas();
+            SetCurveRandomPoints(ref newCurve);                        
+        }
+        
+        Instantiate(pigeon).GetComponent<SplineWalker>();
+        newCurve = null;
     }
 
     private void GetCurveAndSetPointAreas()
@@ -119,7 +117,7 @@ public class EnemySpawner : MonoBehaviour
 
         if(Mathf.Abs(finalPointArea - initPointArea) == 1) // Adjacent areas                   
         {
-            print("Init: " + initPointArea + " Final: " + finalPointArea);
+            //print("Init: " + initPointArea + " Final: " + finalPointArea);
             if(curveComp.points[lenght].y - curveComp.points[0].y < minDeltaPoints)
             {
                 float newOffset = minDeltaPoints / 2f;
@@ -139,15 +137,16 @@ public class EnemySpawner : MonoBehaviour
         float xCoord = 0f;
         float yCoord = 0f;
         int lenght = curveComp.points.Length;
+        const float newOffset = 1.5f;
 
-        if(index == 1)
+        if(index < lenght / 2)
         {
             if(curveComp.points[0].x <= 0f)                
                 xCoord = Random.Range(spawnLimits.lowerLeftMin.position.x, 0f);                           
             else            
                 xCoord = Random.Range(0f, -spawnLimits.lowerLeftMin.position.x);            
         }
-        else if (index == 2)
+        else
         {
             if(curveComp.points[lenght - 1].x <= 0f)
                 xCoord = Random.Range(spawnLimits.lowerLeftMin.position.x, 0f);
@@ -165,7 +164,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         yCoord = Random.Range(spawnLimits.lowerLeftMin.position.y, 
-                spawnLimits.upperLeftMin.position.y);        
+                spawnLimits.upperLeftMin.position.y - newOffset);        
         
         point.x = xCoord;
         point.y = yCoord;        
@@ -185,19 +184,20 @@ public class EnemySpawner : MonoBehaviour
 
         else if(area == PointArea.Up)
         {
+            float newOffset = offset / 2f;
             if(index == 0)
             {
                 if(finalPointArea == PointArea.Left)
-                    newX = Random.Range(0f, -spawnLimits.lowerLeftMax.position.x);
+                    newX = Random.Range(newOffset, -spawnLimits.lowerLeftMax.position.x);
                 else 
-                    newX = Random.Range(spawnLimits.lowerLeftMax.position.x, 0f);
+                    newX = Random.Range(spawnLimits.lowerLeftMax.position.x, newOffset);
             }
             else if(index == lenght - 1)
             {
                 if(initPointArea == PointArea.Left)
-                    newX = Random.Range(0f, -spawnLimits.lowerLeftMax.position.x);
+                    newX = Random.Range(newOffset, -spawnLimits.lowerLeftMax.position.x);
                 else
-                    newX = Random.Range(spawnLimits.lowerLeftMax.position.x, 0f);
+                    newX = Random.Range(spawnLimits.lowerLeftMax.position.x, newOffset);
             }
 
             point.x = newX;

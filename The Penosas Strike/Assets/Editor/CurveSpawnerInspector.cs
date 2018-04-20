@@ -10,7 +10,10 @@ private EnemySpawner spawner;
 		base.OnInspectorGUI();
         if(GUILayout.Button("Generate Curve")) 
 		{
-            spawner.GenerateCurve();           
+            for (int i = 0; i < 1000; i++)
+            {                
+                spawner.GenerateCurve();           
+            }
         }        
     }
 }

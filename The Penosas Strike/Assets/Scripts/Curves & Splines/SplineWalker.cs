@@ -19,7 +19,7 @@ public class SplineWalker : MonoBehaviour
     private void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
-        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;
+        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;        
     }
 
     private void FixedUpdate()
@@ -32,6 +32,18 @@ public class SplineWalker : MonoBehaviour
             		 
         float newZ = Mathf.Atan2(derivative.y, derivative.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0f, 0f, newZ);
+
+        if(Input.touchCount > 0)
+        {
+            Touch newTouch = Input.GetTouch(0);
+            RaycastHit2D hit = Physics2D.Raycast
+                (Camera.main.ScreenToWorldPoint(newTouch.position), Vector2.zero);
+
+            if(hit.collider != null)
+            {
+                DestroyEnemy();
+            }
+        }
     }
 
     private void CalculateProgress()
@@ -67,21 +79,30 @@ public class SplineWalker : MonoBehaviour
         else
         {           
             if (progress < 0f)
-            {
-                LosePoint();
+            {                
                 goingForward = true;
                 sprite.flipX = false;
+                LosePoint();
             }
         }        
     }
 
-    private void LosePoint()
+    private void DestroyEnemy()
     {
-        print("Perde ponto");
+        EnemySpawner.instance.enemyCount--;                 
+        Destroy(curve.gameObject);
+        Destroy(gameObject); 
     }
 
+    private void LosePoint()
+    {
+        DestroyEnemy();
+    }
+
+#if UNITY_EDITOR_WIN
     void OnMouseDown()
     {
-        print("Ganha ponto");
+        DestroyEnemy();
     }
+#endif
 }
