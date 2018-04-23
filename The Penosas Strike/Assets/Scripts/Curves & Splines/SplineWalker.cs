@@ -11,6 +11,7 @@ public class SplineWalker : MonoBehaviour
     private float progress;
     private float deltaPos;
     private bool goingForward = true;
+    private bool isTarget = false;
     private SpriteRenderer sprite;
     private Vector3 position;
     private Vector3 derivative;
@@ -23,26 +24,17 @@ public class SplineWalker : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {   
-        CalculateProgress();
-
-        position = curve.GetPoint(progress);        
-        derivative = curve.GetDirection(progress);   
-        transform.localPosition = position;       
-            		 
-        float newZ = Mathf.Atan2(derivative.y, derivative.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0f, 0f, newZ);
-
-        if(Input.touchCount > 0)
+    {        
+        if (!isTarget)
         {
-            Touch newTouch = Input.GetTouch(0);
-            RaycastHit2D hit = Physics2D.Raycast
-                (Camera.main.ScreenToWorldPoint(newTouch.position), Vector2.zero);
+            CalculateProgress();
 
-            if(hit.collider != null)
-            {
-                DestroyEnemy();
-            }
+            position = curve.GetPoint(progress);
+            derivative = curve.GetDirection(progress);
+            transform.localPosition = position;
+
+            float newZ = Mathf.Atan2(derivative.y, derivative.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, newZ);
         }
     }
 
@@ -98,11 +90,19 @@ public class SplineWalker : MonoBehaviour
     {
         DestroyEnemy();
     }
-
-#if UNITY_EDITOR_WIN
+    
     void OnMouseDown()
     {
-        DestroyEnemy();
+        isTarget = true;
+        Machineggun.instance.ShootEgg(transform);
     }
-#endif
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(isTarget && other.tag == "Egg")
+        {           
+            Destroy(other.gameObject);
+            DestroyEnemy();
+        }
+    }
 }
