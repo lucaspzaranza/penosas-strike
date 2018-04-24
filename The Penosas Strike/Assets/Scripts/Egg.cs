@@ -9,20 +9,16 @@ public class Egg : MonoBehaviour
 
     void Start()
     {
-        transform.LookAt(target);
-        transform.rotation = new Quaternion(0f, 0f, -transform.rotation.z, 1f);
+        Vector2 direction = target.position - transform.position;        
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        angle -= 90f; // To set the top of the egg to be targeting the pigeon
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = rotation;
     }
 
-    void FixedUpdate () 
+    void FixedUpdate()
 	{
-        var newPos = Vector2.MoveTowards(transform.position, target.position, speed);
-        transform.position = newPos;   
-
-        Vector3 targetDir = target.position - transform.position;
-        float step = speed * Time.fixedDeltaTime;
-
-        Vector3 newDir = Vector3.RotateTowards(transform.position, targetDir, step, 0.0f);
-        Debug.DrawRay(transform.position, newDir, Color.red);        
-        transform.rotation = Quaternion.LookRotation(newDir);       
+        var newPos = Vector2.MoveTowards(transform.position, target.position, speed * Time.fixedDeltaTime);
+        transform.position = newPos;                
     }
 }
