@@ -28,8 +28,7 @@ public class Machineggun : MonoBehaviour
     void Update()
     {        
         if(!eggIsCached && ObjectPooler.Instance.poolDictionary["Egg"].Count > 0)
-        {            
-            print("Aloha!");
+        {                        
             CacheEggShot();
         }        
     }

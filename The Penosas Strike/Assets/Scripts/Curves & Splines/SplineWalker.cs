@@ -20,7 +20,8 @@ public class SplineWalker : MonoBehaviour
     private void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
-        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;        
+        curve = FindObjectOfType(typeof(BezierCurve)) as BezierCurve;
+        speed = GameController.instance.pigeonSpeed;
     }
 
     private void FixedUpdate()
@@ -81,7 +82,8 @@ public class SplineWalker : MonoBehaviour
 
     private void LosePoint()
     {
-        EnemySpawner.instance.enemyCount--;                                 
+        EnemySpawner.instance.enemyCount--;
+        GameController.instance.losses++;
         Destroy(gameObject); 
     }
     
@@ -97,6 +99,7 @@ public class SplineWalker : MonoBehaviour
 
     void OnDestroy()
     {
-        Destroy(curve.gameObject);
+        if(curve != null)
+            Destroy(curve.gameObject);
     }
 }

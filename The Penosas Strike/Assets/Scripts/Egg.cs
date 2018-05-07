@@ -13,6 +13,11 @@ public class Egg : MonoBehaviour
     private bool eggUncached = false;    
     #endregion    
 
+    void Start()
+    {
+        speed = GameController.instance.eggSpeed;
+    }
+
     void FixedUpdate()
 	{                
         if(isFired && target != null)
@@ -49,12 +54,13 @@ public class Egg : MonoBehaviour
     {
         if(other.tag == "Pigeon" && Equals(other.gameObject, target))
         {
+            GameController.instance.score++;
             var pigeon = other.gameObject;
             var egg = gameObject;
             ObjectPooler.Instance.ReturnToPool(ref egg);
             DestroyEnemy(ref pigeon);
         }
-    } 
+    }     
 
     void OnDisable()
     {
