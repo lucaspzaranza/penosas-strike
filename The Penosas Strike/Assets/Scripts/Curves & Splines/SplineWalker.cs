@@ -79,30 +79,24 @@ public class SplineWalker : MonoBehaviour
         }        
     }
 
-    private void DestroyEnemy()
-    {
-        EnemySpawner.instance.enemyCount--;                 
-        Destroy(curve.gameObject);
-        Destroy(gameObject); 
-    }
-
     private void LosePoint()
     {
-        DestroyEnemy();
+        EnemySpawner.instance.enemyCount--;                                 
+        Destroy(gameObject); 
     }
     
     void OnMouseDown()
     {
-        isTarget = true;
-        Machineggun.instance.ShootEgg(transform);
+        if(!isTarget)
+        {            
+            isTarget = true;
+            var gObj = gameObject;
+            Machineggun.instance.ShootEgg(ref gObj);
+        }        
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnDestroy()
     {
-        if(isTarget && other.tag == "Egg")
-        {           
-            Destroy(other.gameObject);
-            DestroyEnemy();
-        }
+        Destroy(curve.gameObject);
     }
 }

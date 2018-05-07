@@ -56,12 +56,12 @@ public class ObjectPooler : MonoBehaviour
         
         objectToSpawn = poolDictionary[tag].Dequeue();
         objectToSpawn.SetActive(true);
-        poolDictionary[tag].Enqueue(objectToSpawn);        
+        //poolDictionary[tag].Enqueue(objectToSpawn);        
               
         return objectToSpawn;
     }
 
-    public void ReturnToPool(GameObject obj)
+    public void ReturnToPool(ref GameObject obj)
     {
         if(!poolDictionary.ContainsKey(obj.tag))
         {
@@ -70,6 +70,11 @@ public class ObjectPooler : MonoBehaviour
         }
 
         poolDictionary[obj.tag].Enqueue(obj);
-        obj.SetActive(false);
+        obj.SetActive(false);        
     }
+
+    // void Update()
+    // {
+    //     print(poolDictionary["Egg"].ToArray().Length);
+    // }
 }
