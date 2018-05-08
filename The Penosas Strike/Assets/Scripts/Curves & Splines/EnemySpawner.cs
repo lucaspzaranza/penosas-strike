@@ -44,11 +44,10 @@ public class EnemySpawner : MonoBehaviour
         timer += Time.fixedDeltaTime;
 
         if(timer > timeToSpawnEnemy)        
-        {            
-            timer = 0f;
-           
+        {           
+            timer = 0f; 
             if(enemyCount < maxEnemies)            
-            {                                                                                        
+            {                                                                                                       
                 GenerateCurve();
                 enemyCount++;
             }            
@@ -68,7 +67,7 @@ public class EnemySpawner : MonoBehaviour
             SetCurveRandomPoints(ref newCurve);                        
         }
         
-        Instantiate(pigeon).GetComponent<SplineWalker>();
+        Instantiate(pigeon);
         newCurve = null;
     }
 
