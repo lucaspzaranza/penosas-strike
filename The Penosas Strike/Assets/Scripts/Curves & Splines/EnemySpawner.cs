@@ -16,7 +16,12 @@ public class EnemySpawner : MonoBehaviour
     public GameObject pigeon;
     public GameObject curvePrefab;
     public GameObject pointPrefab;
+    public int enemyCount;
+    public int maxEnemiesCurrent;
+    public int maxEnemiesTotal;
     public float timeToSpawnEnemy;
+    public float minTimeSpawn;
+    public float maxTimeSpawn;
     public float minCurveLength;
     private const float offset = 1f;
     private const float minDeltaPoints = 3f;
@@ -26,8 +31,6 @@ public class EnemySpawner : MonoBehaviour
     private PointArea initPointArea;
     private PointArea finalPointArea;
     private float timer;
-    public int enemyCount;
-    public int maxEnemies;
 
     #endregion
 
@@ -39,18 +42,28 @@ public class EnemySpawner : MonoBehaviour
             Destroy(this.gameObject);
     }   
 
+    void Start()
+    {
+        timeToSpawnEnemy = 1f;
+    }
+
     void FixedUpdate()
     {
-        timer += Time.fixedDeltaTime;
+        if(!GameController.instance.IsGameOver)
+        {
+            timer += Time.fixedDeltaTime;
 
-        if(timer > timeToSpawnEnemy)        
-        {           
-            timer = 0f; 
-            if(enemyCount < maxEnemies)            
-            {                                                                                                       
-                GenerateCurve();
-                enemyCount++;
-            }            
+            if(timer > timeToSpawnEnemy)        
+            {                           
+                if(enemyCount < maxEnemiesCurrent)            
+                {                                                                                                       
+                    GenerateCurve();
+                    enemyCount++;
+
+                    timer = 0f;
+                    timeToSpawnEnemy = Random.Range(minTimeSpawn, maxTimeSpawn);                    
+                }            
+            }
         }
     }
 

@@ -26,7 +26,7 @@ public class SplineWalker : MonoBehaviour
 
     private void FixedUpdate()
     {        
-        if (!isTarget)
+        if (!GameController.instance.IsGameOver && !isTarget)
         {
             CalculateProgress();
 
