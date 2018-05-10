@@ -89,7 +89,7 @@ public class SplineWalker : MonoBehaviour
     
     void OnMouseDown()
     {
-        if(!isTarget)
+        if(!isTarget && !GameController.instance.IsGameOver)
         {            
             isTarget = true;
             var gObj = gameObject;

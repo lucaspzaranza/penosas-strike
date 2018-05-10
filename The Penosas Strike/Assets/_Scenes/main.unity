@@ -704,14 +704,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76e2010115675384dbf0f4c059f36502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canGameOver: 1
   losses: 0
-  nextLevelPontuation: 0
-  nextEnemyRaiseScore: 10
+  nextLevel: 0
+  enemyRaise: 10
   level: 0
   timer: 0
   eggSpeed: 16
   pigeonSpeed: 1.5
-  pigeonMaxSpeed: 2.5
+  _score: 0
 --- !u!4 &1295816809
 Transform:
   m_ObjectHideFlags: 0
@@ -743,7 +744,7 @@ MonoBehaviour:
     type: 2}
   enemyCount: 0
   maxEnemiesCurrent: 1
-  maxEnemiesTotal: 5
+  maxEnemiesTotal: 6
   timeToSpawnEnemy: 0
   minTimeSpawn: 0.5
   maxTimeSpawn: 1.5

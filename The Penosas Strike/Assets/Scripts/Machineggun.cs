@@ -16,7 +16,7 @@ public class Machineggun : MonoBehaviour
 	{
 		if(instance == null)
             instance = this;
-		else
+		else if(instance != this)
             Destroy(this.gameObject);
     }
 

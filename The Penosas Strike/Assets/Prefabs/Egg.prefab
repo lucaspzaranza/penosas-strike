@@ -20,9 +20,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4955492245388234}
   - component: {fileID: 212229677144150892}
-  - component: {fileID: 61328521782956828}
   - component: {fileID: 114017486841515984}
   - component: {fileID: 50469735249081634}
+  - component: {fileID: 58415872342288752}
   m_Layer: 0
   m_Name: Egg
   m_TagString: Egg
@@ -63,8 +63,8 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &61328521782956828
-BoxCollider2D:
+--- !u!58 &58415872342288752
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -75,19 +75,9 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.1}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.2, y: 0.25}
-    newSize: {x: 0.16, y: 0.16}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: 0, y: -0.25}
   serializedVersion: 2
-  m_Size: {x: 0.2, y: 0.025}
-  m_EdgeRadius: 0
+  m_Radius: 0.005
 --- !u!114 &114017486841515984
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -116,6 +106,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:

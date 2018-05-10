@@ -4,30 +4,41 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour 
 {
-    #region Variables    
+    #region Variables
+    public bool canGameOver;
     public int losses;
-    public int nextLevelPontuation;
-    public int nextEnemyRaiseScore;
+    public int nextLevel;
+    public int enemyRaise;
     public int level;
     public float timer;
     public float eggSpeed;
-    public float pigeonSpeed;
-    public float pigeonMaxSpeed;
+    public float pigeonSpeed;        
 
-    private int levelChangeOffset = 5; 
-    private int _score;   
+    private const int maxScore = 999;
+    private const int gameOverScore = 5;
+    private const int levelUpIncreaseRate = 5; 
+    private const float minTimeSpawnLimit = 0.4f;
+    private const float minTimeSpawnDecreaseRate = 0.025f;
+    private const float maxTimeSpawnLimit = 0.6f;
+    private const float maxTimeSpawnDecreaseRate = 0.15f;    
+    [SerializeField] private int _score;   
 
     public static GameController instance;     
     #endregion
 
     #region Props
-    public int Score 
+    public int Score
     {
-        get { return _score; } 
+        get { return _score; }
         set 
-        {
-            _score = value;
-            GameUI.instance.UpdateScore(_score); 
+        {    
+            if(value <= maxScore)                   
+            {
+                _score = value;
+                GameUI.instance.UpdateScore(_score);  
+                if(value == maxScore)            
+                    print("Dude, get a life!"); // Fazer algo pro jogo acabar       
+            }
         }
     }
 
@@ -47,8 +58,9 @@ public class GameController : MonoBehaviour
 
     void Start()
     {
+        //Time.timeScale = 0.3f;
         Screen.orientation = ScreenOrientation.Portrait;               
-        nextLevelPontuation = 5;
+        nextLevel = 5;
         level = 1;      
 
         if(EnemySpawner.instance.maxEnemiesCurrent > 
@@ -58,16 +70,16 @@ public class GameController : MonoBehaviour
 
     void Update()
 	{
-		if(Score == nextLevelPontuation)
+		if(Score == nextLevel)
         {            
             ChangeLevel();
-        }        
+        }       
 
-        // if(!IsGameOver && losses == 5)
-        // {
-        //     IsGameOver = true;
-        //     GameUI.instance.ToggleGameOverMenu(true);            
-        // }
+        if(canGameOver && !IsGameOver && losses == gameOverScore)
+        {
+            IsGameOver = true;
+            GameUI.instance.ToggleGameOverMenu(true);            
+        }
     }
 
 	void FixedUpdate()
@@ -75,64 +87,45 @@ public class GameController : MonoBehaviour
         timer += Time.fixedDeltaTime;
     }
 
-    private void RaiseEnemyAmount()
-    {
-        if (Score == nextEnemyRaiseScore)
+    private void IncreaseEnemyAmount()
+    {        
+        int current = EnemySpawner.instance.maxEnemiesCurrent;
+        int total = EnemySpawner.instance.maxEnemiesTotal;
+        if(current < total)            
         {
-            int current = EnemySpawner.instance.maxEnemiesCurrent;
-            int total = EnemySpawner.instance.maxEnemiesTotal;
-            if(current < total)            
-            {
-                EnemySpawner.instance.maxEnemiesCurrent++;
-                if(Score % 10 == 0) 
-                {
-                    nextEnemyRaiseScore += nextEnemyRaiseScore * 2;
-                }
-            }                    
-        }
+            EnemySpawner.instance.maxEnemiesCurrent++;
+            enemyRaise += 10;
+            #region Versão Antiga
+            /*
+            if(Score < 30)
+                enemyRaise += 10;
+            else if(Score < 50)
+                enemyRaise += 20;
+            else if(Score < 70)
+                enemyRaise += 30;
+            else if(Score < 120)
+                enemyRaise += 40;
+            */
+            #endregion
+        }                            
     }
 
     private void ChangeLevel()
     {
         level++;
-        RaiseEnemyAmount();
-
-        if(pigeonSpeed < pigeonMaxSpeed)
-            pigeonSpeed += 0.075f;             
-
-        if(level % 3 == 0)
-        {
-            if(EnemySpawner.instance.minTimeSpawn > 0.2f)
-                EnemySpawner.instance.minTimeSpawn -= 0.04f;
-            
-            if(EnemySpawner.instance.maxTimeSpawn > 0.5f)
-                EnemySpawner.instance.maxTimeSpawn -= 0.065f;
-        }
+        if(Score == enemyRaise) IncreaseEnemyAmount(); 
         
-        if(levelChangeOffset < 10 && EnemySpawner.instance.maxEnemiesCurrent >= 3)                             
-            levelChangeOffset = 10;
+        if(level % 2 == 0)
+        {
+            if(EnemySpawner.instance.minTimeSpawn  - minTimeSpawnDecreaseRate >= 
+                                                              minTimeSpawnLimit)                                                             
+                EnemySpawner.instance.minTimeSpawn -= minTimeSpawnDecreaseRate;
+            
+            if(EnemySpawner.instance.maxTimeSpawn - maxTimeSpawnDecreaseRate >= 
+                                                              maxTimeSpawnLimit)                                                            
+                EnemySpawner.instance.maxTimeSpawn -= maxTimeSpawnDecreaseRate;            
+        }                
 
-        nextLevelPontuation += levelChangeOffset;  
+        nextLevel += levelUpIncreaseRate;  
     }
 }
-
-/*
-    Level 1: 1 pombo, velocidade 1,5, spawn rate 0,5 ~ 1,5
-    Level impossible: 5 pombos, velocidade 2,5 spawn rate 0,2 ~ 0,5
-*/
-
-/*
-
-Valores de f(x) que eu quero alcançar pra nextEnemyRaiseScore
-10 (2) 30 (3) 50 (4) 80 (5) 120
-
-
-
-f(x) = 10 + x
-
-11 ~ 49 += 20 => x = 10
-
-51 ~ 79 += 30 => x = 20
-
-81 ~ 119 += 40 => x = 30
- */
