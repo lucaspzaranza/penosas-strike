@@ -83,7 +83,7 @@ public class SplineWalker : MonoBehaviour
     private void LosePoint()
     {
         EnemySpawner.instance.enemyCount--;
-        GameController.instance.losses++;
+        GameController.instance.Life--;
         Destroy(gameObject); 
     }
     
