@@ -57,7 +57,7 @@ public class Egg : MonoBehaviour
     {
         if(other.tag == "Pigeon" && Equals(other.gameObject, target))
         {
-            GameController.instance.Score++;
+            GameController.instance.Score++;            
             var pigeon = other.gameObject;
             var egg = gameObject;
             ObjectPooler.Instance.ReturnToPool(ref egg);

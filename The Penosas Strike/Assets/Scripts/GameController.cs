@@ -11,8 +11,9 @@ public class GameController : MonoBehaviour
     public int level;
     public float timer;
     public float eggSpeed;
-    public float pigeonSpeed;        
-    
+    public float pigeonSpeed;
+    public Animator sunglasses;
+
     private const int maxScore = 999;    
     private const int insaneLevelScore = 150;
     private const int levelUpIncreaseRate = 5; 
@@ -21,7 +22,7 @@ public class GameController : MonoBehaviour
     private const float maxTimeSpawnLimit = 0.6f;
     private const float maxTimeSpawnDecreaseRate = 0.15f;    
     [SerializeField] private int _score;
-    [SerializeField] private int _life;
+    [SerializeField] [Range(0,5)] private int _life;
     [SerializeField] private bool _insaneLevel;
 
     public static GameController instance;     
@@ -45,7 +46,7 @@ public class GameController : MonoBehaviour
                 if(value == maxScore)                                       
                     GameUI.instance.CallGetALifeMenu();                           
                 else if(_score % 100 == 0)                
-                    if(Life > 0) Life++;                    
+                    Life++;                    
             }
         }
     }
@@ -55,8 +56,9 @@ public class GameController : MonoBehaviour
         get { return _life; }
         set 
         {
-            GameUI.instance.UpdateLifeHUD(value > _life);
-            if(value >= 0 && value <= MaxLife) _life = value;             
+            bool isBigger = value > _life;        
+            if(value >= 0 && value <= MaxLife) _life = value;            
+            GameUI.instance.UpdateLifeHUD(isBigger);
         }
     }
 
@@ -123,7 +125,9 @@ public class GameController : MonoBehaviour
         EnemySpawner.instance.minTimeSpawn = minTimeSpawnLimit;
         EnemySpawner.instance.maxTimeSpawn = 0.5f;
         EnemySpawner.instance.maxEnemiesCurrent = 
-            EnemySpawner.instance.maxEnemiesTotal;                
+            EnemySpawner.instance.maxEnemiesTotal;
+
+        sunglasses.SetBool("Sunglasses", true);
     }
 
     private void IncreaseEnemyAmount()
@@ -142,7 +146,7 @@ public class GameController : MonoBehaviour
         level++;
         
         if(Score == enemyRaise) IncreaseEnemyAmount(); 
-        else if(Score == insaneLevelScore) ActivateInsaneMode();        
+        else if(Score >= insaneLevelScore) ActivateInsaneMode();        
 
         if(level % 2 == 0)
         {

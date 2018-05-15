@@ -7,12 +7,14 @@ using System.Linq;
 
 public class GameUI : MonoBehaviour 
 {
+    #region Vars
     public static GameUI instance;
     public GameObject gameOverMenu;
-    public GameObject getALifeMenu;
+    public GameObject getALifeMenu;    
     public Text gameScore;    
     [SerializeField] private GameObject[] lives;
     private int counter = 0; 
+    #endregion
 
     void Awake()
 	{
@@ -52,18 +54,24 @@ public class GameUI : MonoBehaviour
 
     public void StartLifeHUD()
     {              
-        counter = GameController.instance.MaxLife - GameController.instance.Life;        
-        for (int i = 0; i < counter; i++)
+        counter = GameController.instance.Life;        
+        for (int i = lives.Length - 1; i >= counter; i--)
         {
             lives[i].SetActive(false);
-        }
+        }        
     }
 
     public void UpdateLifeHUD(bool value)
-    {
-        if(value && counter - 1 >= 0) counter--;            
-        else if(value && counter + 1 < lives.Length) counter++;
-
-        lives[counter].SetActive(value);
-    }
+    {                      
+        if(value)
+        {                        
+            if(counter < lives.Length) lives[counter].SetActive(value);                 
+            counter = GameController.instance.Life;        
+        }
+        else
+        {
+            counter = GameController.instance.Life;            
+            if(counter >= 0) lives[counter].SetActive(value);                
+        }                                         
+    }          
 }
