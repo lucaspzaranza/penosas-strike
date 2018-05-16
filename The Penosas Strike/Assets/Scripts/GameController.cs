@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private int _score;
     [SerializeField] [Range(0,5)] private int _life;
     [SerializeField] private bool _insaneLevel;
+    private bool restartedGame;
 
     public static GameController instance;     
     #endregion
@@ -78,6 +79,14 @@ public class GameController : MonoBehaviour
             _insaneLevel = value;
         }
     }
+
+    public bool LostGameRestarted
+    {
+        get
+        {
+            return restartedGame;
+        }
+    }
     #endregion
 
     void Awake()
@@ -96,7 +105,7 @@ public class GameController : MonoBehaviour
 
         if(EnemySpawner.instance.maxEnemiesCurrent > 
             EnemySpawner.instance.maxEnemiesTotal)
-                EnemySpawner.instance.maxEnemiesCurrent = 1;        
+                EnemySpawner.instance.maxEnemiesCurrent = 1;
     }
 
     void Update()
@@ -116,7 +125,7 @@ public class GameController : MonoBehaviour
 	void FixedUpdate()
 	{
         if(!IsGameOver)
-            timer += Time.fixedDeltaTime;
+            timer += Time.fixedDeltaTime;    
     }
 
     private void ActivateInsaneMode()
@@ -139,6 +148,37 @@ public class GameController : MonoBehaviour
             EnemySpawner.instance.maxEnemiesCurrent++;                             
             enemyRaise += 10;            
         }                            
+    }
+
+    public void ResumeLostGameplay(int numOfLives)
+    {        
+        Life = numOfLives;
+        GameUI.instance.RestartLifeHUD();
+        IsGameOver = false;
+        restartedGame = true;
+        ReturnEggsToPool();
+        DestroyAllPigeons();
+    }
+
+    private void ReturnEggsToPool()
+    {
+        var eggs = GameObject.FindGameObjectsWithTag("Egg");
+
+        for (int i = 0; i < eggs.Length; i++)
+        {
+            var eggScript = eggs[i].GetComponent<Egg>();
+            if(eggScript.target != null)            
+                ObjectPooler.Instance.ReturnToPool(ref eggs[i]);                            
+        }        
+    }
+
+    private void DestroyAllPigeons()
+    {
+        var pigeons = GameObject.FindGameObjectsWithTag("Pigeon");        
+        for (int i = 0; i < pigeons.Length; i++)
+        {
+            Destroy(pigeons[i]);            
+        }
     }
 
     private void ChangeLevel()

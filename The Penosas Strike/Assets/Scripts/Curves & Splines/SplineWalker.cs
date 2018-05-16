@@ -15,6 +15,7 @@ public class SplineWalker : MonoBehaviour
     private SpriteRenderer sprite;
     private Vector3 position;
     private Vector3 derivative;
+    private Vector3 prevPos;
     #endregion
 
     private void Start()
@@ -32,20 +33,23 @@ public class SplineWalker : MonoBehaviour
 
             position = curve.GetPoint(progress);
             derivative = curve.GetDirection(progress);
+
+            if(WillBeUpsideDown()) sprite.flipY = true;                            
+
             transform.localPosition = position;
 
             float newZ = Mathf.Atan2(derivative.y, derivative.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, newZ);
+            transform.rotation = Quaternion.Euler(0f, 0f, newZ);            
         }
     }
 
     private void CalculateProgress()
     {      
         deltaPos += (goingForward) ? curve.CalculateDeltaPosition(progress) 
-                    : -curve.CalculateDeltaPosition(progress);       
+                    : -curve.CalculateDeltaPosition(progress);        
 
         float newProgress =  (deltaPos * speed) / curve.Length;
-        progress = newProgress;
+        progress = newProgress;        
 
         if (goingForward)
         {                       
@@ -70,7 +74,7 @@ public class SplineWalker : MonoBehaviour
             }
         }
         else
-        {           
+        {            
             if (progress < 0f)
             {                
                 goingForward = true;
@@ -78,6 +82,15 @@ public class SplineWalker : MonoBehaviour
                 LosePoint();
             }
         }        
+    }
+
+    private bool WillBeUpsideDown()
+    {
+        bool result = position.x > 0f;
+        result &= position.x - transform.position.x < 0f;
+        result &= !sprite.flipY;
+
+        return result;
     }
 
     private void LosePoint()
