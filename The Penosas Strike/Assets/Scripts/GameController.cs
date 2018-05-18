@@ -20,11 +20,11 @@ public class GameController : MonoBehaviour
     private const float minTimeSpawnLimit = 0.4f;
     private const float minTimeSpawnDecreaseRate = 0.025f;
     private const float maxTimeSpawnLimit = 0.6f;
-    private const float maxTimeSpawnDecreaseRate = 0.15f;    
+    private const float maxTimeSpawnDecreaseRate = 0.15f;        
     [SerializeField] private int _score;
     [SerializeField] [Range(0,5)] private int _life;
-    [SerializeField] private bool _insaneLevel;
-    private bool restartedGame;
+    [SerializeField] private bool _insaneLevel;    
+    private bool restartedGame;    
 
     public static GameController instance;     
     #endregion
@@ -119,14 +119,14 @@ public class GameController : MonoBehaviour
         {
             IsGameOver = true;
             GameUI.instance.ToggleGameOverMenu(true);            
-        }             		   
+        }                     
     }
 
 	void FixedUpdate()
 	{
-        if(!IsGameOver)
+        if(EnemySpawner.instance.enabled && !IsGameOver)
             timer += Time.fixedDeltaTime;    
-    }
+    }    
 
     private void ActivateInsaneMode()
     {
@@ -150,14 +150,42 @@ public class GameController : MonoBehaviour
         }                            
     }
 
-    public void ResumeLostGameplay(int numOfLives)
-    {        
+    public IEnumerator ResumeLostGameplay(int numOfLives)
+    {               
+        ReturnEggsToPool();
+        DestroyAllPigeons();
+        
+        while(Countdown.instance.TimeInt > -1)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
         Life = numOfLives;
         GameUI.instance.RestartLifeHUD();
         IsGameOver = false;
-        restartedGame = true;
+        restartedGame = true;                
+    }
+
+    public IEnumerator ResetGame()
+    {        
+        if(Time.timeScale == 0) Time.timeScale = 1f;        
+        EnemySpawner.instance.enabled = false;
         ReturnEggsToPool();
-        DestroyAllPigeons();
+        DestroyAllPigeons();    
+        timer = 0f;    
+        Score = 0;
+        IsGameOver = false;
+        restartedGame = false;        
+        level = 1;
+        nextLevel = 5;
+
+        while(Countdown.instance.TimeInt > -1)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        Life = MaxLife;
+        GameUI.instance.StartLifeHUD();                
     }
 
     private void ReturnEggsToPool()

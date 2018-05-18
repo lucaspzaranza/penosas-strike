@@ -8,14 +8,20 @@ public class GameUI : MonoBehaviour
 {
     #region Vars
     public static GameUI instance;
+    public GameObject inGameMenu;
     public GameObject gameOverMenu;
     public GameObject getALifeMenu;
     public GameObject adsMenu;
     public GameObject adsButton;
-    public Text gameScore;    
+    public GameObject countdown;
+    public GameObject resetButton;
+    public Text gameScore;
+    public Text pauseButtonTxt;
+    public GameObject initialMenu;
     [SerializeField] private GameObject[] lives;
     private int counter = 0;
     private int numOfLives;
+    private bool isPaused = false;
     #endregion
 
     void Awake()
@@ -33,18 +39,36 @@ public class GameUI : MonoBehaviour
 
 	public void ToggleGameOverMenu(bool value)
 	{
+        if(!value)
+            EnemySpawner.instance.enabled = false;
+
         if(value && getALifeMenu.activeInHierarchy) 
             getALifeMenu.SetActive(false);
 
         gameOverMenu.gameObject.SetActive(value);
+        DeactivateInGameButtons();
 
         if(GameController.instance.LostGameRestarted)
             adsButton.SetActive(false);
     }
 
+    private void DeactivateInGameButtons()
+    {
+        if(resetButton.activeSelf)
+        {
+            pauseButtonTxt.transform.parent.gameObject.SetActive(false);
+            resetButton.SetActive(false);
+        }       
+    }
+
     public void UpdateScore(int value)
     {
         gameScore.text = value.ToString();
+    }
+
+    public void ToggleInitialMenu(bool value)
+    {
+        initialMenu.SetActive(value);
     }
 
     public void CallGetALifeMenu()
@@ -75,9 +99,41 @@ public class GameUI : MonoBehaviour
         }
     }
 
+    public void ToggleInGameMenu(bool value)
+    {
+        inGameMenu.SetActive(value);
+    }
+
+    public void StartGame()
+    {                
+        ToggleInitialMenu(false);
+        countdown.SetActive(true);
+    }
+
     public void RestartGame()
     {        
         SceneManager.LoadScene(0);
+    }
+
+    public void TogglePauseGame()
+    {
+        if(!isPaused)
+        {
+            isPaused = true;
+            Time.timeScale = 0f;
+            pauseButtonTxt.text = "Resume";
+        }
+        else
+        {
+            isPaused = false;
+            Time.timeScale = 1f;
+            pauseButtonTxt.text = "Pause";
+        }
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     public void SetNumberOfLives(int newNumOfLives)
@@ -87,7 +143,20 @@ public class GameUI : MonoBehaviour
 
     public void ResumeGame()
     {
-        GameController.instance.ResumeLostGameplay(numOfLives);
+        countdown.SetActive(true);        
+        StartCoroutine(GameController.instance.ResumeLostGameplay(numOfLives));
+
+        if(!resetButton.activeSelf)
+        {
+            pauseButtonTxt.transform.parent.gameObject.SetActive(true);
+            resetButton.SetActive(true);
+        }
+    }
+
+    public void CallResetGame()
+    {
+        countdown.SetActive(true);
+        StartCoroutine(GameController.instance.ResetGame());
     }
 
     public void UpdateLifeHUD(bool value)
@@ -100,7 +169,8 @@ public class GameUI : MonoBehaviour
         else
         {
             counter = GameController.instance.Life;            
-            if(counter >= 0) lives[counter].SetActive(value);                
+            if(counter >= 0 && counter < lives.Length) 
+                lives[counter].SetActive(value);                
         }                                         
     }          
 }

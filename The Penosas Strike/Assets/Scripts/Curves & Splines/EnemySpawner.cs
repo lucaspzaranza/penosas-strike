@@ -25,6 +25,7 @@ public class EnemySpawner : MonoBehaviour
     public float minCurveLength;
     private const float offset = 1f;
     private const float minDeltaPoints = 3f;
+    private const float initTimeToSpawnEnemy = 1f;
     public SpawnLimits spawnLimits;    
     private GameObject newCurve;
     private BezierCurve curveComp;
@@ -40,11 +41,11 @@ public class EnemySpawner : MonoBehaviour
             instance = this;                
 		else if(instance != this)
             Destroy(this.gameObject);
-    }   
+    }           
 
     void Start()
     {
-        timeToSpawnEnemy = 1f;
+        timeToSpawnEnemy = initTimeToSpawnEnemy;
     }
 
     void FixedUpdate()
@@ -220,5 +221,12 @@ public class EnemySpawner : MonoBehaviour
         
         point.y = Random.Range(spawnLimits.lowerLeftMin.position.y, 
             spawnLimits.upperLeftMin.position.y);                                                        
+    }
+
+    void OnDisable()
+    {
+        timer = 0f;
+        enemyCount = 0;
+        timeToSpawnEnemy = initTimeToSpawnEnemy;
     }
 }
