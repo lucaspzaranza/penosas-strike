@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffed8c64b8be905468a21fa49f492a14, type: 3}
+  m_Name: Portuguese
+  m_EditorClassIdentifier: 
+  _startBtn: "Come\xE7ar"
+  _recordBtn: Recordes
+  _howToPlayBtn: Como Jogar
+  _quitBtn: Sair
+  _gameOverRestart: Retornar ao Menu Principal, ou continuar jogando?
+  _resumeLostMatchBtn: Continuar
+  _restartMatchBtn: "Recome\xE7ar"
+  _chooseYourChances: "Escolha uma op\xE7\xE3o e assista a uma propaganda."
+  _oneLife: 1 Vida
+  _twoLives: 2 Vidas
+  _threeLives: 3 Vidas
+  _continueMatchBtn: Vamo nessa!
+  _backBtn: Voltar
+  _resetBtn: Resetar
+  _areYouSure: Tem certeza?
+  _yes: Sim
+  _no: "N\xE3o"
+  _tapThePigeons: "Toque nos p\xE1ssaros quando eles aparecerem na tela."
+  _beFast: "Seja r\xE1pido! Voc\xEA perde vida se n\xE3o peg\xE1-los."
+  _insaneMode: Duvido chegar no Modo Insano!
+  _gotItBtn: Saquei!
+  _resumeGame: Retornar
+  _tryAgain: Tente outra vez!
+  _getALife: Mano, vai viver...
+  _neverMind: "Deixa pra l\xE1"
+  _noNetwork: "A propaganda n\xE3o pode ser exibida. Por favor verifique sua conex\xE3o
+    com a Internet."
+  _noNetPlayAnyway: Vai assim mesmo
+  _difficulty: 'Dificuldade:'
+  _easy: "F\xE1cil"
+  _medium: "M\xE9dio"
+  _hard: "Dif\xEDcil"
+  _sfxVolume: 'Efeitos sonoros:'
+  _options: "Op\xE7\xF5es"
+  _livesMenu: 'Vidas:'
+  _mainMenuBtn: Menu Principal
+  _personalRecordBtn: Recorde Pessoal
+  _leaderboardBtn: Ranking Geral
+  _achievementsBtn: Conquistas
+  _gameSkin: 'Skin do Game:'
+  _defaultSkin: "Padr\xE3o"
+  _christmasSkin: Natal

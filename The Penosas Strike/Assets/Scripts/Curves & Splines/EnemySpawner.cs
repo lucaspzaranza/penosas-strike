@@ -5,8 +5,7 @@ using UnityEngine;
 public enum PointArea
 {
     Left = 0,
-    Up = 1,
-    Right = 2
+    Right = 1
 };
 
 public class EnemySpawner : MonoBehaviour 
@@ -40,7 +39,7 @@ public class EnemySpawner : MonoBehaviour
 		if(instance == null)		
             instance = this;                
 		else if(instance != this)
-            Destroy(this.gameObject);
+            Destroy(this.gameObject);            
     }           
 
     void Start()
@@ -50,7 +49,7 @@ public class EnemySpawner : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(!GameController.instance.IsGameOver)
+        if(!GameController.instance.IsGameOver && !GameController.instance.IsPaused)
         {
             timer += Time.fixedDeltaTime;
 
@@ -80,7 +79,7 @@ public class EnemySpawner : MonoBehaviour
             GetCurveAndSetPointAreas();
             SetCurveRandomPoints(ref newCurve);                        
         }
-        
+               
         Instantiate(pigeon);
         newCurve = null;
     }
@@ -88,15 +87,13 @@ public class EnemySpawner : MonoBehaviour
     private void GetCurveAndSetPointAreas()
     {
         curveComp = newCurve.GetComponent<BezierCurve>();        
-        PointArea[] areas = { PointArea.Left, PointArea.Up, PointArea.Right };
 
-        int index = Random.Range(0, 2); // Left or Up
+        PointArea[] areas = { PointArea.Left, PointArea.Right };
+
+        int index = Random.Range(0, 2); // Left or Right
         initPointArea = areas[index];
 
-        if(initPointArea == PointArea.Up)
-            index = Random.Range(0, 2) * 2; //Left Or Right
-        else if(initPointArea == PointArea.Left)
-            index = Random.Range(1, 3); // Up or Right
+        index = 1 - index;
 
         finalPointArea = areas[index];
     }
@@ -110,40 +107,15 @@ public class EnemySpawner : MonoBehaviour
                 Vector2 newPoint = Vector2.zero;
                 if(i == 0) 
                     SetRandomPositionInSpawnZone(i, ref newPoint, initPointArea);
-                else if(i == curveComp.points.Length - 1)
-                {
-                    SetRandomPositionInSpawnZone(i, ref newPoint, finalPointArea);	
-                    IncreasePointsDeltaYDistance(ref newPoint);
-                }  
+                else if(i == curveComp.points.Length - 1)                
+                    SetRandomPositionInSpawnZone(i, ref newPoint, finalPointArea);	                                                                                 
                 else
                     SetRandomPositionInGameZone(ref newPoint, i);
 
                 curveComp.UpdateCurvePoint(i, ref newPoint);
             }			            
         }
-    }
-
-    private void IncreasePointsDeltaYDistance(ref Vector2 newPoint)
-    {
-        int lenght = curveComp.points.Length - 1;
-        Vector2 initPointChanged = curveComp.points[0];
-
-        if(Mathf.Abs(finalPointArea - initPointArea) == 1) // Adjacent areas                   
-        {
-            //print("Init: " + initPointArea + " Final: " + finalPointArea);
-            if(curveComp.points[lenght].y - curveComp.points[0].y < minDeltaPoints)
-            {
-                float newOffset = minDeltaPoints / 2f;
-
-                initPointChanged.y += 
-                    (initPointArea == PointArea.Up) ? newOffset : -newOffset;
-                curveComp.UpdateCurvePoint(0, ref initPointChanged);
-
-                newPoint.y += 
-                    (finalPointArea == PointArea.Up) ? newOffset : -newOffset;                    
-            }
-        }
-    }
+    }   
 
 	private void SetRandomPositionInGameZone(ref Vector2 point, int index)
 	{
@@ -193,31 +165,7 @@ public class EnemySpawner : MonoBehaviour
 
         if(area == PointArea.Left) point.x = newX;
 
-        else if(area == PointArea.Right) point.x = -newX; 
-
-        else if(area == PointArea.Up)
-        {
-            float newOffset = offset / 2f;
-            if(index == 0)
-            {
-                if(finalPointArea == PointArea.Left)
-                    newX = Random.Range(newOffset, -spawnLimits.lowerLeftMax.position.x);
-                else 
-                    newX = Random.Range(spawnLimits.lowerLeftMax.position.x, newOffset);
-            }
-            else if(index == lenght - 1)
-            {
-                if(initPointArea == PointArea.Left)
-                    newX = Random.Range(newOffset, -spawnLimits.lowerLeftMax.position.x);
-                else
-                    newX = Random.Range(spawnLimits.lowerLeftMax.position.x, newOffset);
-            }
-
-            point.x = newX;
-            point.y = Random.Range(spawnLimits.upperLeftMin.position.y, 
-                spawnLimits.upperLeftMax.position.y) + Random.Range(0.5f, offset);
-            return;
-        }
+        else if(area == PointArea.Right) point.x = -newX;        
         
         point.y = Random.Range(spawnLimits.lowerLeftMin.position.y, 
             spawnLimits.upperLeftMin.position.y);                                                        

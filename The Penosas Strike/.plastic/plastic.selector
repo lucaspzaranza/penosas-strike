@@ -1,0 +1,3 @@
+rep "The Penosas Strike@Lucas_Zaranza@cloud"
+  path "/"
+    smartbranch "/main"

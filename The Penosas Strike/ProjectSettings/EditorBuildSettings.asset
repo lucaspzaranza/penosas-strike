@@ -8,3 +8,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/main.unity
     guid: 47e66447c83d0a4478e3f8db8fdbfa6f
+  - enabled: 1
+    path: Assets/_Scenes/main-OptionMenu.unity
+    guid: 98655eb8a4270fa4e8f823ffade04b01
+  - enabled: 1
+    path: Assets/_Scenes/christmas-mainMenu.unity
+    guid: 96aa55530557991408d55ca2a6d0665a
+  - enabled: 1
+    path: Assets/_Scenes/christmas-optionMenu.unity
+    guid: 58fbbadb7c8c7b44fad61acbbf40e8d3
+  m_configObjects: {}

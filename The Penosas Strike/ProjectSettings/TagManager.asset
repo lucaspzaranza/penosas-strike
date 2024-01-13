@@ -6,8 +6,20 @@ TagManager:
   tags:
   - Pool
   - Curve
-  - Pigeon
   - Egg
+  - Pigeon
+  - Visible Area
+  - +1
+  - +2
+  - Miss
+  - Cannon Smoke
+  - Cracked Egg
+  - Life +1
+  - Game Messages
+  - Bomb
+  - Difficulty Toggle
+  - Swoosh Zone
+  - Crosshair
   layers:
   - Default
   - TransparentFX

@@ -6,10 +6,16 @@ public class Machineggun : MonoBehaviour
 {
     #region Variables
     public static Machineggun instance;
-    public Vector2 eggStartPosition;
+    public Transform eggShotPosition;
+    public Transform smokePosition;
+    [SerializeField] private GameObject egg;
     private Egg eggScript;
     private GameObject newEgg;
-    public bool eggIsCached { get; private set; }
+    public GameObject cannon;
+    public GameObject smoke;
+    public GameObject crosshair; 
+    private GameObject currentCrosshair;
+    public Animator animator;
     #endregion
 
     void Awake()
@@ -18,39 +24,46 @@ public class Machineggun : MonoBehaviour
             instance = this;
 		else if(instance != this)
             Destroy(this.gameObject);
+    }  
+
+	public void StartEggShooting(ref GameObject target)
+	{                               
+        StartCoroutine(RotateCannonAndShotEgg(target));        
     }
 
-    void Start()
-    {
-        eggIsCached = false;
-    }
-
-    void Update()
+    private void ShotEgg(ref GameObject target)
     {        
-        if(!eggIsCached && ObjectPooler.Instance.poolDictionary["Egg"].Count > 0)
-        {                        
-            CacheEggShot();
-        }        
-    }
-
-    private void CacheEggShot()
-    {
-        newEgg = ObjectPooler.Instance.SpawnFromPool("Egg");        
+        newEgg = Instantiate(egg, eggShotPosition.position, Quaternion.identity) as GameObject;
+            
         eggScript = newEgg.GetComponent<Egg>();
-        eggIsCached = true;
-    }
-
-	public void ShootEgg(ref GameObject target)
-	{       
-        newEgg.transform.position = eggStartPosition;        
         eggScript.target = target;
-        eggScript.isFired = true;
+        newEgg.transform.position = eggShotPosition.position;                  
     }
-
-    public void UncacheEggShot()
+    
+    private IEnumerator RotateCannonAndShotEgg(GameObject target)
     {
-        newEgg = null;
-        eggScript = null;
-        eggIsCached = false;
+        Vector2 direction = target.transform.position - cannon.transform.position;        
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;   
+        float current = cannon.transform.rotation.eulerAngles.z;
+        while(current != angle)          
+        { 
+            yield return new WaitForEndOfFrame();
+            if(!GameController.instance.IsGameOver)
+            {
+                current = Mathf.MoveTowardsAngle(current, angle, 15f);
+                Quaternion rotation = Quaternion.AngleAxis(current, Vector3.forward);
+                cannon.transform.rotation = rotation;
+            }
+            else yield break;
+        }   
+
+        // Disparar animação da fumacinha e um recuo do canhão
+        int triggerHash = Animator.StringToHash("Ricochet");
+        animator.SetTrigger(triggerHash);                            
+        var newSmoke = ObjectPooler.Instance.SpawnFromPool("Cannon Smoke");
+        newSmoke.transform.position = smokePosition.position;
+        ShotEgg(ref target);
+
+        SoundManager.instance.PlayAudio(ref SoundManager.instance.shot);        
     }
 }

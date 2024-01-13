@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffed8c64b8be905468a21fa49f492a14, type: 3}
+  m_Name: English
+  m_EditorClassIdentifier: 
+  _startBtn: Start
+  _recordBtn: Records
+  _howToPlayBtn: How To Play
+  _quitBtn: Quit
+  _gameOverRestart: Return to the Main Menu, or continue the game?
+  _resumeLostMatchBtn: Continue
+  _restartMatchBtn: Main Menu
+  _chooseYourChances: Choose an option and watch an ad!
+  _oneLife: 1 Life
+  _twoLives: 2 Lives
+  _threeLives: 3 Lives
+  _continueMatchBtn: Let's go!
+  _backBtn: Back
+  _resetBtn: Reset
+  _areYouSure: Are You Sure?
+  _yes: Yes
+  _no: No
+  _tapThePigeons: Tap the birds when they appear in screen.
+  _beFast: Be fast! You'll lose a life if you miss them.
+  _insaneMode: Try to unlock the Insane Mode!
+  _gotItBtn: Got it!
+  _resumeGame: Resume
+  _tryAgain: Try again!
+  _getALife: Dude, get a life...
+  _neverMind: Never mind
+  _noNetwork: The ad could not be shown. Please verify your net connection.
+  _noNetPlayAnyway: Let's play anyway
+  _difficulty: 'Difficulty:'
+  _easy: Easy
+  _medium: Medium
+  _hard: Hard
+  _sfxVolume: 'Effects Volume:'
+  _options: Options
+  _livesMenu: 'Lives:'
+  _mainMenuBtn: Main Menu
+  _personalRecordBtn: Personal Records
+  _leaderboardBtn: Leaderboard
+  _achievementsBtn: Achievements
+  _gameSkin: 'Game Skin:'
+  _defaultSkin: Default
+  _christmasSkin: Christmas

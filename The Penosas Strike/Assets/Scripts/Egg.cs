@@ -5,12 +5,11 @@ using UnityEngine;
 public class Egg : MonoBehaviour 
 {
     #region Variables
-    public GameObject target;
+    public GameObject target;    
+    public GameObject eggParts;
+    public GameObject rawEgg;
     public Vector2 initStartPosition;
     public float speed;
-    public bool isFired;
-    private bool rotationChanged = false;
-    private bool eggUncached = false;    
     #endregion    
 
     void Start()
@@ -20,56 +19,68 @@ public class Egg : MonoBehaviour
 
     void FixedUpdate()
 	{                
-        if(!GameController.instance.IsGameOver)
+        if(!GameController.instance.IsGameOver && !GameController.instance.IsPaused)
         {
-            if(isFired && target != null)
-            {        
-                if(Machineggun.instance.eggIsCached && !eggUncached)
-                {
-                    Machineggun.instance.UncacheEggShot();
-                    eggUncached = true;                
-                }
-                    
+            if(target != null)
+            {                           
                 var newPos = Vector2.MoveTowards(transform.position, target.transform.position, speed * Time.fixedDeltaTime);
                 transform.position = newPos;  
 
-                if(!rotationChanged)
-                {
-                    Vector2 direction = target.transform.position - transform.position;        
-                    float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                    angle -= 90f; // To set the top of the egg to be targeting the pigeon
-                    Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-                    transform.rotation = rotation;
+                Vector2 direction = target.transform.position - transform.position;        
+                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                angle -= 90f; // To set the top of the egg to be targeting the pigeon
+                Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+                transform.rotation = rotation;      
+                
+                Vector2 eggPosition = transform.position;
+                Vector2 targetPosition = target.transform.position;
 
-                    rotationChanged = true;
-                }                     
+                if(eggPosition == targetPosition)
+                {                    
+                    SoundManager.instance.PlayAudio(ref SoundManager.instance.hitSFX);             
+                    GameController.instance.Score++;                                      
+                    DestroyEnemy(ref target);    
+                    Destroy(gameObject);
+                }
             }
-        }
+        }        
     }
 
     private void DestroyEnemy(ref GameObject enemy)
     {
-        EnemySpawner.instance.enemyCount--;                         
-        Destroy(enemy); 
+        EnemySpawner.instance.enemyCount--;     
+
+        Animator enemyAnimator = enemy.GetComponent<Animator>();
+        int explodeTrigger = Animator.StringToHash("Explode");        
+        Destroy(enemy.transform.GetChild(0).gameObject);
+        enemyAnimator.SetTrigger(explodeTrigger);             
+
+        if(!GameController.instance.IsChristmas)                
+        {
+            var crackedEgg = Instantiate(eggParts, 
+            transform.position, Quaternion.identity) as GameObject;
+            if(crackedEgg != null) crackedEgg.transform.position = enemy.transform.position;
+        }
+
+        ScoreInstantiation(enemy.transform);
+        //SoundManager.instance.PlayAudio(ref SoundManager.instance.pointScore);
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void ScoreInstantiation(Transform enemyTransform)
     {
-        if(other.tag == "Pigeon" && Equals(other.gameObject, target))
+        int randomNumber = Random.Range(0, 100);
+               
+        if(randomNumber == 2) // Instancia um ovo cru às vezes (1% de chance)
         {
-            GameController.instance.Score++;            
-            var pigeon = other.gameObject;
-            var egg = gameObject;
-            ObjectPooler.Instance.ReturnToPool(ref egg);
-            DestroyEnemy(ref pigeon);
+            GameController.instance.Score++;  
+            var newPlusTwoScore = ObjectPooler.Instance.SpawnFromPool("+2");
+            newPlusTwoScore.transform.position = enemyTransform.position;
+            Instantiate(rawEgg, enemyTransform.position, Quaternion.identity);
         }
-    }     
-
-    void OnDisable()
-    {
-        transform.rotation = Quaternion.identity;
-        transform.position = initStartPosition;
-        rotationChanged = false;
-        eggUncached = false;
-    }   
+        else
+        {        
+            var newPlusOneScore = ObjectPooler.Instance.SpawnFromPool("+1");
+            newPlusOneScore.transform.position = enemyTransform.position;  
+        }
+    }
 }

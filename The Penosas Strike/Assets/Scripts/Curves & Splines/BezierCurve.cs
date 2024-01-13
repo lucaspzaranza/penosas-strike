@@ -27,7 +27,7 @@ public class BezierCurve : MonoBehaviour
 			new Vector3(1f, 0f, 0f),
 			new Vector3(2f, 0f, 0f),
 			new Vector3(3f, 0f, 0f),
-			new Vector3(4f, 0f, 0f)
+			new Vector3(4f, 0f, 0f),
 		};
 	}
 

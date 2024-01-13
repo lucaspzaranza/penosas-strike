@@ -54,11 +54,16 @@ public class ObjectPooler : MonoBehaviour
             return null;
         }
         
-        objectToSpawn = poolDictionary[tag].Dequeue();
-        objectToSpawn.SetActive(true);
-        //poolDictionary[tag].Enqueue(objectToSpawn);        
-              
-        return objectToSpawn;
+        if(poolDictionary[tag].Count > 0)
+        {
+            objectToSpawn = poolDictionary[tag].Dequeue();
+            objectToSpawn.SetActive(true);                    
+                
+            return objectToSpawn;
+        }
+
+        Debug.LogWarning("Queue is empty!");
+        return null;
     }
 
     public void ReturnToPool(ref GameObject obj)
@@ -72,9 +77,4 @@ public class ObjectPooler : MonoBehaviour
         poolDictionary[obj.tag].Enqueue(obj);
         obj.SetActive(false);        
     }
-
-    // void Update()
-    // {
-    //     print(poolDictionary["Egg"].ToArray().Length);
-    // }
 }
